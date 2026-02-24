@@ -1,7 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'www.kmooc.kr',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.kmooc.kr',
+      }
+    ],
+  },
 };
 
 export default nextConfig;
