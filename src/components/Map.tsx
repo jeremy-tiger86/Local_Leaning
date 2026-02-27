@@ -25,6 +25,7 @@ export default function Map() {
     const [courseType, setCourseType] = useState<'offline' | 'online'>('offline');
     const CATEGORIES = ['전체', '취미/문화', '스포츠/건강', '인문/교양', '재테크/자기계발', 'IT/디지털'];
     const [selectedCategory, setSelectedCategory] = useState('전체');
+    const [categoryExpanded, setCategoryExpanded] = useState(false);
 
     // Region Selection States
     const [regionMenuOpen, setRegionMenuOpen] = useState(false);
@@ -280,8 +281,9 @@ export default function Map() {
             {/* Filter Controls */}
             <div className="w-full flex flex-col gap-4 mb-6 z-10">
                 <div className="flex flex-col w-full gap-2">
-                    <div className="flex items-start relative w-full px-2 overflow-hidden">
-                        <div className="flex gap-1.5 flex-1 overflow-x-auto pb-2 hide-scrollbar-smooth pr-2 select-none">
+                    <div className="flex items-start relative w-full px-2">
+                        <div className={`flex gap-1.5 flex-1 pb-2 hide-scrollbar-smooth select-none ${categoryExpanded ? 'flex-wrap' : 'overflow-x-auto pr-2'
+                            }`}>
                             {CATEGORIES.map(cat => (
                                 <button
                                     key={cat}
@@ -292,6 +294,14 @@ export default function Map() {
                                 </button>
                             ))}
                         </div>
+                        {/* 펼치기/접기 버튼 */}
+                        <button
+                            onClick={() => setCategoryExpanded(!categoryExpanded)}
+                            className="shrink-0 ml-1 p-1.5 rounded-full bg-white/70 border border-white/40 text-slate-500 hover:bg-white/90 hover:text-slate-700 transition-all"
+                            aria-label={categoryExpanded ? '접기' : '펼치기'}
+                        >
+                            {categoryExpanded ? <ChevronUp size={16} strokeWidth={2.5} /> : <ChevronDown size={16} strokeWidth={2.5} />}
+                        </button>
                     </div>
                 </div>
 
