@@ -220,7 +220,7 @@ export default function Map() {
     }, [lectures, courseType, selectedCategory, location, selectedSido, selectedSigungu]);
 
     return (
-        <div className="w-full flex flex-col items-center relative font-inter pb-24">
+        <div className="w-full flex flex-col items-center relative font-inter pb-4">
 
             {errorMsg && (
                 <div className="w-full mb-4 p-3 rounded-2xl bg-[#CA8A04]/10 border border-[#CA8A04]/20 text-[#CA8A04] text-sm text-center backdrop-blur-md transition-all">
