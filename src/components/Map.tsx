@@ -148,7 +148,7 @@ export default function Map() {
             )}
 
             {/* Title / Region Selector */}
-            <div className="w-full flex flex-col items-start px-2 pt-2 pb-4 relative z-20">
+            <div className="w-full flex flex-col items-start px-2 pt-1 pb-12 relative z-20">
 
                 {/* Row 1: 토글버튼 - 화면 중앙 정렬 */}
                 <div className="w-full flex justify-center mb-3">
