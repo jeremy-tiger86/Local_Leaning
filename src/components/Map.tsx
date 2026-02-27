@@ -25,7 +25,7 @@ export default function Map() {
     const [courseType, setCourseType] = useState<'offline' | 'online'>('offline');
     const CATEGORIES = ['전체', '취미/문화', '스포츠/건강', '인문/교양', '재테크/자기계발', 'IT/디지털'];
     const [selectedCategory, setSelectedCategory] = useState('전체');
-    const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState('전체');
 
     // Region Selection States
     const [regionMenuOpen, setRegionMenuOpen] = useState(false);
@@ -339,8 +339,8 @@ export default function Map() {
             {/* Filter Controls */}
             <div className="w-full flex flex-col gap-4 mb-6 z-10">
                 <div className="flex flex-col w-full gap-2">
-                    <div className="flex items-start relative w-full px-2">
-                        <div className={`flex gap-1.5 flex-1 hide-scrollbar-smooth ${isCategoryExpanded ? 'flex-wrap pb-1' : 'overflow-x-auto pb-2'} pr-9`}>
+                    <div className="flex items-start relative w-full px-2 overflow-hidden">
+                        <div className="flex gap-1.5 flex-1 overflow-x-auto pb-2 hide-scrollbar-smooth pr-2 select-none">
                             {CATEGORIES.map(cat => (
                                 <button
                                     key={cat}
@@ -351,13 +351,6 @@ export default function Map() {
                                 </button>
                             ))}
                         </div>
-                        <button
-                            onClick={() => setIsCategoryExpanded(!isCategoryExpanded)}
-                            className="absolute right-2 top-0 mt-0.5 w-7 h-7 flex justify-center items-center bg-white/80 border border-slate-200 rounded-full shadow-sm text-slate-600 hover:bg-[#1E40AF] hover:text-white hover:border-[#1E40AF] transition-all z-10 backdrop-blur-md"
-                            aria-label="카테고리 더보기"
-                        >
-                            {isCategoryExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                        </button>
                     </div>
                 </div>
 
