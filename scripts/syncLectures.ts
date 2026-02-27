@@ -150,21 +150,23 @@ async function fetchPublicData() {
             }
 
             const formattedLectures = items.map((item: any) => {
-                const { lat, lng } = generateJitter();
-
-                const applyEnd = (item.rceptEndDate && new Date(item.rceptEndDate) < new Date())
-                    ? '2026-12-31'
-                    : (item.rceptEndDate || null);
+                // ★ 결정론적 ID: 직충명 + 강좌명 + 시작일 + 종료일 조합
+                const baseId = [
+                    item.insttNm || 'UKN',
+                    item.lctreNm || 'NO_LECTURE',
+                    item.edcStartDay || 'NO_START',
+                    item.edcEndDay || 'NO_END',
+                ].join('_').replace(/\s+/g, '_').substring(0, 200);
 
                 return {
-                    id: `STD_${item.insttNm || 'UKN'}_${item.lctreNm}_${Math.random().toString(36).substr(2, 5)}`,
+                    id: `STD_${baseId}`,
                     title: item.lctreNm || '제목 없음',
                     instructor: item.instrctrNm || '강사 미상',
                     period: `${item.edcStartDay || ''} ~ ${item.edcEndDay || ''}`,
                     target: item.edcTrgetType || '누구나',
                     link: item.homepageUrl || '',
-                    lat: lat,
-                    lng: lng,
+                    lat: null,  // geocoding 스크립트로 나중에 실제 주소 반영
+                    lng: null,
                     address: item.edcRdnmadr || item.edcPlace || '장소 미상',
                     is_free: (item.lctreCost === '0'),
                     price: item.lctreCost === '0' ? '무료' : (item.lctreCost ? `${item.lctreCost}원` : '무료')
