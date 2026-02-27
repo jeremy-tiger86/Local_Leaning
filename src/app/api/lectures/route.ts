@@ -4,6 +4,18 @@ import { Lecture } from '@/types/lecture';
 
 export const dynamic = 'force-dynamic';
 
+// period 문자열에서 종료일 파싱 (예: "2025-07-12 ~ 2025-07-12" → "2025-07-12")
+function parseEndDate(period: string | null | undefined): string | null {
+    if (!period) return null;
+    // "YYYY-MM-DD ~ YYYY-MM-DD" 또는 "YYYY.MM.DD ~ YYYY.MM.DD" 형식
+    const parts = period.split('~');
+    if (parts.length < 2) return null;
+    const endStr = parts[1].trim().replace(/\./g, '-');
+    // 유효한 날짜인지 확인
+    const d = new Date(endStr);
+    return isNaN(d.getTime()) ? null : endStr;
+}
+
 // Sido 축약형 매핑
 const SIDO_ALIASES: Record<string, string[]> = {
     '서울특별시': ['서울'],
@@ -156,28 +168,42 @@ export async function GET(request: Request) {
 
         if (error) throw error;
 
-        const formatData: Lecture[] = (data || []).map(row => {
-            const dbCategory = row.category || '일반';
-            const category = (dbCategory === '일반' || !dbCategory)
-                ? classifyCategory(row.title || '')
-                : dbCategory;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-            return {
-                id: row.id,
-                title: row.title,
-                instructor: row.instructor,
-                period: row.period,
-                target: row.target,
-                link: row.link,
-                lat: row.lat,
-                lng: row.lng,
-                address: row.address,
-                isFree: row.is_free,
-                price: row.price,
-                category,
-                applyEnd: '2026-12-31',
-            };
-        });
+        const formatData: Lecture[] = (data || [])
+            .map(row => {
+                const dbCategory = row.category || '일반';
+                const category = (dbCategory === '일반' || !dbCategory)
+                    ? classifyCategory(row.title || '')
+                    : dbCategory;
+
+                const endDate = parseEndDate(row.period);
+
+                return {
+                    id: row.id,
+                    title: row.title,
+                    instructor: row.instructor,
+                    period: row.period,
+                    target: row.target,
+                    link: row.link,
+                    lat: row.lat,
+                    lng: row.lng,
+                    address: row.address,
+                    isFree: row.is_free,
+                    price: row.price,
+                    category,
+                    applyEnd: endDate || '2099-12-31',
+                    _endDate: endDate, // 필터용 내부 필드
+                };
+            })
+            // ★ 오늘 이전 종료된 강좌 제거
+            .filter((row: any) => {
+                if (!row._endDate) return true; // 날짜 없으면 유지
+                return new Date(row._endDate) >= today;
+            })
+            .map(({ _endDate, ...rest }: any) => rest); // 내부 필드 제거
+
 
         console.log(`[/api/lectures] type=${type} sido=${sido} sigungu=${sigungu} → ${formatData.length}건`);
         return NextResponse.json({ success: true, data: formatData });
