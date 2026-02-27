@@ -25,7 +25,6 @@ export default function Map() {
     const [courseType, setCourseType] = useState<'offline' | 'online'>('offline');
     const CATEGORIES = ['전체', '취미/문화', '스포츠/건강', '인문/교양', '재테크/자기계발', 'IT/디지털'];
     const [selectedCategory, setSelectedCategory] = useState('전체');
-    const [selectedCategory, setSelectedCategory] = useState('전체');
 
     // Region Selection States
     const [regionMenuOpen, setRegionMenuOpen] = useState(false);
@@ -220,7 +219,7 @@ export default function Map() {
     }, [lectures, courseType, selectedCategory, location, selectedSido, selectedSigungu]);
 
     return (
-        <div className="w-full flex flex-col items-center relative font-inter pb-4">
+        <div className="w-full flex flex-col items-center relative font-inter pb-0">
 
             {errorMsg && (
                 <div className="w-full mb-4 p-3 rounded-2xl bg-[#CA8A04]/10 border border-[#CA8A04]/20 text-[#CA8A04] text-sm text-center backdrop-blur-md transition-all">
