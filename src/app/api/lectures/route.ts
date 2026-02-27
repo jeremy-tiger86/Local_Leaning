@@ -54,13 +54,20 @@ function classifyCategory(title: string): string {
     if (
         t.includes('만들기') || t.includes('공예') || t.includes('요리') ||
         t.includes('아트') || t.includes('캘리') || t.includes('드로잉') ||
-        t.includes('그림') || t.includes('미술') || t.includes('diy') ||
-        t.includes('제작') || t.includes('음악') || t.includes('악기') ||
-        t.includes('예술') || t.includes('사진') || t.includes('영화') ||
-        t.includes('뮤지컬') || t.includes('연극') || t.includes('무용') ||
-        t.includes('공연') || t.includes('애니메이션') || t.includes('조각') ||
-        t.includes('게임') || t.includes('응용미술') || t.includes('서예') ||
-        t.includes('판화') || t.includes('도예') || t.includes('사물놀이')
+        t.includes('그림') || t.includes('그리기') || t.includes('그리는') ||
+        t.includes('미술') || t.includes('diy') || t.includes('제작') ||
+        t.includes('음악') || t.includes('악기') || t.includes('예술') ||
+        t.includes('사진') || t.includes('영화') || t.includes('뮤지컬') ||
+        t.includes('연극') || t.includes('무용') || t.includes('공연') ||
+        t.includes('애니메이션') || t.includes('조각') || t.includes('게임') ||
+        t.includes('서예') || t.includes('판화') || t.includes('도예') ||
+        t.includes('풍경화') || t.includes('수채화') || t.includes('수묵화') ||
+        t.includes('채색') || t.includes('스케치') || t.includes('일러스트') ||
+        t.includes('플라워') || t.includes('꽃꽂이') || t.includes('뜨개') ||
+        t.includes('자수') || t.includes('가죽') || t.includes('목공') ||
+        t.includes('사물놀이') || t.includes('난타') || t.includes('기타') ||
+        t.includes('피아노') || t.includes('바이올린') || t.includes('드럼') ||
+        t.includes('보컬') || t.includes('노래') || t.includes('합창')
     ) return '취미/문화';
 
     // ③ 스포츠/건강
@@ -108,7 +115,9 @@ function classifyCategory(title: string): string {
         t.includes('병법') || t.includes('우주')
     ) return '인문/교양';
 
-    return '일반';
+    // 최종 안전망: 온라인 강좌 특성상 모두 '인문/교양' 포함 처리
+    // (어떤 카테고리에도 속하지 않는 강좌가 '전체'에만 보이는 문제 방지)
+    return '인문/교양';
 }
 
 export async function GET(request: Request) {
