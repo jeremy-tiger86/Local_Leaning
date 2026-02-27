@@ -61,8 +61,6 @@ async function fetchKmoocData() {
             }
 
             const formattedLectures = items.map((item: any) => {
-                const { lat, lng } = generateJitter();
-
                 // Convert timestamp to YYYY-MM-DD
                 const formatTimestamp = (ts: string) => {
                     if (!ts) return '';
@@ -81,8 +79,8 @@ async function fetchKmoocData() {
                     period: period,
                     target: '온라인 수강가능 대상자',
                     link: item.url || 'http://www.kmooc.kr/',
-                    lat: lat,
-                    lng: lng,
+                    lat: null,
+                    lng: null,
                     address: '온라인 강좌',
                     is_free: true,
                     price: '무료'

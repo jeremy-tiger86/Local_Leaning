@@ -413,7 +413,7 @@ export default function Map() {
                     ) : processedLectures.length > 0 ? (
                         processedLectures.map((lecture) => {
                             const dDay = calculateDDay(lecture.applyEnd);
-                            const distanceStr = lecture.distance !== Infinity && lecture.distance !== undefined
+                            const distanceStr = !lecture.isOnline && lecture.distance !== Infinity && lecture.distance !== undefined
                                 ? `${lecture.distance.toFixed(1)}km`
                                 : '';
 
