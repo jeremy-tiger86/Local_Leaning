@@ -230,15 +230,37 @@ export default function Map() {
             {/* Title / Region Selector */}
             <div className="w-full flex flex-col items-start px-2 pt-2 pb-6 relative z-20">
                 {/* Logo Row */}
-                <div className="w-full mb-1">
+                <div className="w-full mb-1 flex items-center justify-between">
                     <img
                         src="/logo.png"
                         alt="Moi (모이)"
                         className="h-10 w-auto object-contain"
                     />
+
+                    {/* Toggle Button Moved to Top Center/Right */}
+                    <div className="flex bg-slate-100 rounded-full p-1 border border-slate-200 shadow-inner">
+                        <button
+                            onClick={() => {
+                                setCourseType('offline');
+                                setViewMode('map'); // Default to map for offline
+                            }}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${courseType === 'offline' ? 'bg-white text-[#1E3A8A] shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                            오프라인
+                        </button>
+                        <button
+                            onClick={() => {
+                                setCourseType('online');
+                                setViewMode('list'); // Force list view for online
+                            }}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${courseType === 'online' ? 'bg-white text-[#1E3A8A] shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
+                        >
+                            온라인
+                        </button>
+                    </div>
                 </div>
 
-                {/* Sub-text & Region Selector Row */}
+                {/* Sub-text & Region Selector Row (Only show Region Selector if Offline) */}
                 <div className="w-full flex items-center justify-between gap-2">
                     <div className="flex flex-col text-left shrink-0">
                         <p className="text-slate-600 text-[13px] sm:text-sm tracking-tight hidden sm:block">
@@ -249,20 +271,22 @@ export default function Map() {
                         </p>
                     </div>
 
-                    <button
-                        onClick={() => {
-                            setModalActiveSido(selectedSido);
-                            setRegionMenuOpen(true);
-                        }}
-                        className="flex items-center gap-1.5 text-[11px] sm:text-[13px] font-bold tracking-tight text-[#1E3A8A] hover:bg-slate-50/80 px-2.5 py-1.5 rounded-lg border border-slate-100 hover:border-slate-200 bg-white/50 backdrop-blur-sm transition-all shadow-sm shrink-0"
-                    >
-                        <MapPin size={14} className="text-[#1E3A8A]" strokeWidth={2.5} />
-                        <span>{selectedSido}</span>
-                        <span className="flex items-center gap-0.5 text-[#475569]">
-                            {selectedSigungu}
-                            <ChevronDown size={14} className="text-[#475569]" strokeWidth={2.5} />
-                        </span>
-                    </button>
+                    {courseType === 'offline' && (
+                        <button
+                            onClick={() => {
+                                setModalActiveSido(selectedSido);
+                                setRegionMenuOpen(true);
+                            }}
+                            className="flex items-center gap-1.5 text-[11px] sm:text-[13px] font-bold tracking-tight text-[#1E3A8A] hover:bg-slate-50/80 px-2.5 py-1.5 rounded-lg border border-slate-100 hover:border-slate-200 bg-white/50 backdrop-blur-sm transition-all shadow-sm shrink-0"
+                        >
+                            <MapPin size={14} className="text-[#1E3A8A]" strokeWidth={2.5} />
+                            <span>{selectedSido}</span>
+                            <span className="flex items-center gap-0.5 text-[#475569]">
+                                {selectedSigungu}
+                                <ChevronDown size={14} className="text-[#475569]" strokeWidth={2.5} />
+                            </span>
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -357,20 +381,6 @@ export default function Map() {
                     <span className="text-[#1E40AF] font-medium text-sm">
                         {loading ? '강좌 검색 중...' : `총 ${processedLectures.length}개의 강좌가 있습니다`}
                     </span>
-                    <div className="flex bg-slate-100 rounded-full p-1 border border-slate-200 shadow-inner">
-                        <button
-                            onClick={() => setCourseType('offline')}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${courseType === 'offline' ? 'bg-white text-[#1E3A8A] shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
-                        >
-                            오프라인
-                        </button>
-                        <button
-                            onClick={() => setCourseType('online')}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${courseType === 'online' ? 'bg-white text-[#1E3A8A] shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
-                        >
-                            온라인
-                        </button>
-                    </div>
                 </div>
             </div>
 
@@ -466,20 +476,22 @@ export default function Map() {
                 </div>
             )}
 
-            {/* Floating Action Button for Toggle */}
-            <div className="fixed bottom-8 z-50 flex justify-end w-full max-w-[480px] px-6" style={{ left: '50%', transform: 'translateX(-50%)' }}>
-                <button
-                    onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
-                    className="flex items-center justify-center w-14 h-14 bg-[#1E3A8A] text-white rounded-full shadow-[0_8px_30px_rgb(30,58,138,0.3)] hover:bg-[#1E40AF] hover:scale-105 active:scale-95 transition-all duration-300 border border-white/10 backdrop-blur-xl"
-                    aria-label={viewMode === 'list' ? '지도 뷰' : '목록 뷰'}
-                >
-                    {viewMode === 'list' ? (
-                        <MapIcon size={24} />
-                    ) : (
-                        <ListIcon size={24} />
-                    )}
-                </button>
-            </div>
+            {/* Floating Action Button for Toggle (Only show if Offline) */}
+            {courseType === 'offline' && (
+                <div className="fixed bottom-8 z-50 flex justify-end w-full max-w-[480px] px-6" style={{ left: '50%', transform: 'translateX(-50%)' }}>
+                    <button
+                        onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
+                        className="flex items-center justify-center w-14 h-14 bg-[#1E3A8A] text-white rounded-full shadow-[0_8px_30px_rgb(30,58,138,0.3)] hover:bg-[#1E40AF] hover:scale-105 active:scale-95 transition-all duration-300 border border-white/10 backdrop-blur-xl"
+                        aria-label={viewMode === 'list' ? '지도 뷰' : '목록 뷰'}
+                    >
+                        {viewMode === 'list' ? (
+                            <MapIcon size={24} />
+                        ) : (
+                            <ListIcon size={24} />
+                        )}
+                    </button>
+                </div>
+            )}
 
             {/* Scoped Styles */}
             <style dangerouslySetInnerHTML={{
