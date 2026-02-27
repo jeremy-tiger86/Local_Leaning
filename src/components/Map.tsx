@@ -417,7 +417,7 @@ export default function Map() {
 
                             return (
                                 <div key={lecture.id} className="group relative w-full bg-white/60 backdrop-blur-xl hover:bg-white/90 border border-white/80 p-6 rounded-3xl shadow-[0_8px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(30,58,138,0.08)] transition-all duration-300 transform hover:-translate-y-1">
-                                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                                    <div className="flex flex-wrap items-center gap-2 mb-4 min-h-[36px]">
                                         {dDay && (
                                             <span className={`text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider ${dDay === '마감' ? 'bg-slate-200/50 text-slate-500' : (dDay === 'D-Day' || (dDay.startsWith('D-') && parseInt(dDay.replace('D-', '')) <= 3) ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700')}`}>
                                                 {dDay === '마감' ? '접수마감' : `접수마감 ${dDay}`}
