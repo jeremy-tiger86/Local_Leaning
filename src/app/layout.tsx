@@ -14,8 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Local Leaning',
-  description: '공공데이터포털 기반 우리 동네 무료 강의 지도',
+  title: '나를 위한 배움이 모이는 곳, Moi(모이)',
+  description: '나를 위한 배움이 모이는 곳, Moi',
+  icons: {
+    icon: '/favicon.png',
+    apple: '/apple-icon.png',
+  },
 };
 
 export default function RootLayout({
@@ -26,16 +30,17 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        {/* 카카오맵 SDK 로드 (strategy="beforeInteractive" 사용하여 미리 로드) */}
         <Script
-          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&libraries=services,clusterer,drawing&autoload=false`}
+          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&libraries=services,clusterer&autoload=false`}
           strategy="beforeInteractive"
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-200 flex justify-center min-h-screen`}
       >
-        {children}
+        <div className="w-full max-w-[480px] bg-slate-50 min-h-screen shadow-2xl relative overflow-x-hidden flex flex-col">
+          {children}
+        </div>
       </body>
     </html>
   );

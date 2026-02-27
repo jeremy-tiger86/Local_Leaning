@@ -12,6 +12,7 @@ CREATE TABLE public.lectures (
   address text,
   is_free boolean DEFAULT true,
   price text,
+  category text,
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );

@@ -33,7 +33,7 @@ Fact Checker(사실 검증), Logic Validator(논리적 일관성 검증), Bias D
 <Content Team>: 블로그, SNS, 뉴스, 이메일 등 텍스트 기반 콘텐츠 제작
 Content Director, Blog Writer, Social Writer, News Writer, email Writer
 
-<Visual Team>: 썸네일, 카드뉴스, 숏폼 영상 등 시각 자료 제작
+<Visual Team>: 썸네일, 카드뉴스, 숏폼 영상 등 시각 자료 제작 (UI/UX Pro Max 기반 참고모델 활용)
 Visual Director, Thumbnail Creator, Card News Creator, Video Creator
 
 <Performance Team>: 마케팅 캠페인 기획 및 광고 효율 데이터 분석
@@ -48,10 +48,10 @@ Brand Checker, Content Reviewer
 3. **Digital Group (디지털 제품 및 개발 그룹)**
 전략과 마케팅 방향성에 부합하는 디지털 서비스(웹/앱)를 설계하고 구축한다. (GitHub 활용)
 
-<UX Team>: 사용자 여정 설계 및 정성/정량적 사용자 경험 연구
+<UX Team>: 사용자 여정 설계 및 정성/정량적 사용자 경험 연구 (UI/UX Pro Max 기반 참고모델 활용)
 UX Director, Senior/Junior UX Designer, Senior/Junior UX Researcher
 
-<UI Team>: 비주얼 인터페이스 디자인 및 시스템 구축 (Stitch 활용)
+<UI Team>: 비주얼 인터페이스 디자인 및 시스템 구축 (Stitch 활용, UI/UX Pro Max 기반 참고모델 활용)
 UI Director, Senior/Junior UI Designer
 
 <FE Dev Team>: 프론트엔드 인터페이스 개발 및 사용자 인터랙션 구현

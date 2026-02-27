@@ -1,0 +1,35 @@
+name: Sync Lectures Data
+
+on:
+  schedule:
+    # 매월 10일, 20일 자정 (KST 기준)
+    # KST 00:00 == UTC 15:00 (전날 9일, 19일)
+    - cron: '0 15 9,19 * *'
+  workflow_dispatch: # GitHub Actions 웹 화면에서 수동 실행할 수 있는 버튼
+
+jobs:
+  sync_data:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Data Sync Script
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_DATA_PORTAL_KEY: ${{ secrets.NEXT_PUBLIC_DATA_PORTAL_KEY }}
+          NEXT_PUBLIC_KAKAO_MAP_API_KEY: ${{ secrets.NEXT_PUBLIC_KAKAO_MAP_API_KEY }}
+        run: |
+          echo "Starting scheduled lecture data sync..."
+          npx tsx scripts/syncLectures.ts
+          echo "Sync completed successfully."

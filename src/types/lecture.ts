@@ -11,4 +11,6 @@ export interface Lecture {
     address: string; // edcPlc
     isFree: boolean;
     price?: string;
+    distance?: number; // 거리를 저장하기 위한 필드 (km)
+    category?: string;
 }
