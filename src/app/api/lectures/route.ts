@@ -8,9 +8,9 @@ export async function GET(request: Request) {
     try {
         console.log("Fetching lectures from Supabase (bypassing 1000 limit)...");
 
-        // Fetch in parallel chunks of 1000 up to 30000
+        // Fetch in parallel chunks of 1000 up to 60000
         const CHUNK_SIZE = 1000;
-        const MAX_PAGES = 30;
+        const MAX_PAGES = 60;
 
         const fetchPage = async (pageIndex: number) => {
             const { data, error } = await supabase
