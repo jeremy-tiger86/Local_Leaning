@@ -167,38 +167,57 @@ export default function Map() {
                 // Fallback: title/content keyword matching for safety
                 const searchStr = (l.title + ' ' + (l.category || '')).toLowerCase();
 
+                if (selectedCategory === 'IT/디지털') {
+                    return searchStr.includes('스마트폰') || searchStr.includes('챗gpt') || searchStr.includes('코딩') ||
+                        searchStr.includes('프로그래밍') || searchStr.includes('데이터') || searchStr.includes('인공지능') ||
+                        searchStr.includes('소프트웨어') || searchStr.includes('파이썬') || searchStr.includes('자바') ||
+                        searchStr.includes('엑셀') || searchStr.includes('컴퓨터') || searchStr.includes('알고리즘') ||
+                        searchStr.includes('네트워크') || searchStr.includes('데이터베이스') || searchStr.includes('보안') ||
+                        searchStr.includes('클라우드') || searchStr.includes('머신러닝') || searchStr.includes('딥러닝') ||
+                        searchStr.includes('전자공학') || searchStr.includes('반도체') || searchStr.includes('자료구조') ||
+                        searchStr.includes('운영체제') || searchStr.includes('블록체인') || searchStr.includes('ict') ||
+                        searchStr.includes(' ai ') || searchStr.includes(' it ');
+                }
                 if (selectedCategory === '취미/문화') {
                     return searchStr.includes('만들기') || searchStr.includes('공예') || searchStr.includes('요리') ||
                         searchStr.includes('아트') || searchStr.includes('캘리') || searchStr.includes('드로잉') ||
                         searchStr.includes('그림') || searchStr.includes('음악') || searchStr.includes('악기') ||
-                        searchStr.includes('미술') || searchStr.includes('diy') || searchStr.includes('제작');
+                        searchStr.includes('미술') || searchStr.includes('diy') || searchStr.includes('제작') ||
+                        searchStr.includes('예술') || searchStr.includes('사진') || searchStr.includes('영화') ||
+                        searchStr.includes('디자인') || searchStr.includes('뮤지컬') || searchStr.includes('연극') ||
+                        searchStr.includes('무용') || searchStr.includes('게임') || searchStr.includes('공연');
                 }
                 if (selectedCategory === '스포츠/건강') {
                     return searchStr.includes('요가') || searchStr.includes('댄스') || searchStr.includes('수영') ||
                         searchStr.includes('다이빙') || searchStr.includes('스포츠') || searchStr.includes('운동') ||
                         searchStr.includes('건강') || searchStr.includes('체육') || searchStr.includes('에어로빅') ||
-                        searchStr.includes('필라테스') || searchStr.includes('골프') || searchStr.includes('테니스');
+                        searchStr.includes('필라테스') || searchStr.includes('골프') || searchStr.includes('테니스') ||
+                        searchStr.includes('의학') || searchStr.includes('의료') || searchStr.includes('간호') ||
+                        searchStr.includes('보건') || searchStr.includes('영양') || searchStr.includes('재활') ||
+                        searchStr.includes('임상') || searchStr.includes('약학');
                 }
                 if (selectedCategory === '인문/교양') {
                     return searchStr.includes('인문') || searchStr.includes('역사') || searchStr.includes('심리') ||
                         searchStr.includes('철학') || searchStr.includes('문학') || searchStr.includes('독서') ||
-                        searchStr.includes('교양') || searchStr.includes('문화') || searchStr.includes('사회') ||
-                        searchStr.includes('예술') || searchStr.includes('언어') || searchStr.includes('어학') ||
-                        searchStr.includes('영어') || searchStr.includes('중국어') || searchStr.includes('일본어');
+                        searchStr.includes('교양') || searchStr.includes('문화') || searchStr.includes('예술') ||
+                        searchStr.includes('언어') || searchStr.includes('어학') || searchStr.includes('영어') ||
+                        searchStr.includes('중국어') || searchStr.includes('일본어') || searchStr.includes('한국어') ||
+                        searchStr.includes('물리') || searchStr.includes('화학') || searchStr.includes('생물') ||
+                        searchStr.includes('수학') || searchStr.includes('통계') || searchStr.includes('법학') ||
+                        searchStr.includes('사회학') || searchStr.includes('정치') || searchStr.includes('한국사') ||
+                        searchStr.includes('세계사') || searchStr.includes('지구') || searchStr.includes('환경') ||
+                        searchStr.includes('교육학') || searchStr.includes('지리') || searchStr.includes('종교') ||
+                        searchStr.includes('신학') || searchStr.includes('미디어') || searchStr.includes('사회');
                 }
                 if (selectedCategory === '재테크/자기계발') {
                     return searchStr.includes('부동산') || searchStr.includes('경매') || searchStr.includes('주식') ||
                         searchStr.includes('재테크') || searchStr.includes('창업') || searchStr.includes('자격증') ||
-                        searchStr.includes('기사') || searchStr.includes('산업기사') || searchStr.includes('기능사') ||
-                        searchStr.includes('시험') || searchStr.includes('지도사') || searchStr.includes('취업') ||
+                        searchStr.includes('기사') || searchStr.includes('기능사') || searchStr.includes('지도사') ||
+                        searchStr.includes('취업') || searchStr.includes('경영') || searchStr.includes('경제') ||
+                        searchStr.includes('마케팅') || searchStr.includes('회계') || searchStr.includes('금융') ||
+                        searchStr.includes('비즈니스') || searchStr.includes('리더십') || searchStr.includes('행정') ||
+                        searchStr.includes('세무') || searchStr.includes('투자') || searchStr.includes('스타트업') ||
                         searchStr.includes('커리어') || searchStr.includes('은퇴') || searchStr.includes('정년');
-                }
-                if (selectedCategory === 'IT/디지털') {
-                    return searchStr.includes('스마트폰') || searchStr.includes('챗gpt') || searchStr.includes('코딩') ||
-                        searchStr.includes('프로그래밍') || searchStr.includes('it') || searchStr.includes('데이터') ||
-                        searchStr.includes('ai') || searchStr.includes('인공지능') || searchStr.includes('소프트웨어') ||
-                        searchStr.includes('파이썬') || searchStr.includes('자바') || searchStr.includes('엑셀') ||
-                        searchStr.includes('컴퓨터') || searchStr.includes('블로그') || searchStr.includes('유튜브');
                 }
                 return false;
             });
