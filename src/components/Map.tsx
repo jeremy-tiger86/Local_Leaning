@@ -228,21 +228,34 @@ export default function Map() {
             )}
 
             {/* Title / Region Selector */}
-            <div className="w-full flex flex-col items-start px-2 pt-2 pb-6 relative z-20">
-                {/* Logo Row */}
-                <div className="w-full mb-1 flex items-center justify-between">
+            <div className="w-full flex flex-col items-start px-2 pt-2 pb-4 relative z-20">
+                {/* Row 1: 로고 + 서브문구 */}
+                <div className="w-full flex items-center gap-3 mb-2">
                     <img
                         src="/logo.png"
                         alt="Moi (모이)"
-                        className="h-10 w-auto object-contain"
+                        className="h-10 w-auto object-contain shrink-0"
                     />
+                    <div className="flex flex-col text-left">
+                        <p className="text-slate-600 text-[13px] sm:text-sm tracking-tight hidden sm:block">
+                            나를 위한 배움이 모이는 곳, Moi
+                        </p>
+                        <p className="text-slate-600 text-[13px] tracking-tight sm:hidden">
+                            배움이 모이는 곳, Moi
+                        </p>
+                    </div>
+                </div>
 
-                    {/* Toggle Button Moved to Top Center/Right */}
+                {/* 구분선 */}
+                <div className="w-full border-t border-slate-100 mb-3" />
+
+                {/* Row 2: 토글버튼 (좌) + 지역선택 (우, 오프라인만) */}
+                <div className="w-full flex items-center justify-between gap-2">
                     <div className="flex bg-slate-100 rounded-full p-1 border border-slate-200 shadow-inner">
                         <button
                             onClick={() => {
                                 setCourseType('offline');
-                                setViewMode('map'); // Default to map for offline
+                                setViewMode('map');
                             }}
                             className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${courseType === 'offline' ? 'bg-white text-[#1E3A8A] shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
                         >
@@ -251,24 +264,12 @@ export default function Map() {
                         <button
                             onClick={() => {
                                 setCourseType('online');
-                                setViewMode('list'); // Force list view for online
+                                setViewMode('list');
                             }}
                             className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${courseType === 'online' ? 'bg-white text-[#1E3A8A] shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
                         >
                             온라인
                         </button>
-                    </div>
-                </div>
-
-                {/* Sub-text & Region Selector Row (Only show Region Selector if Offline) */}
-                <div className="w-full flex items-center justify-between gap-2">
-                    <div className="flex flex-col text-left shrink-0">
-                        <p className="text-slate-600 text-[13px] sm:text-sm tracking-tight hidden sm:block">
-                            나를 위한 배움이 모이는 곳, Moi
-                        </p>
-                        <p className="text-slate-600 text-[13px] tracking-tight sm:hidden">
-                            배움이 모이는 곳, Moi
-                        </p>
                     </div>
 
                     {courseType === 'offline' && (
