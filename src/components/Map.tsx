@@ -229,28 +229,9 @@ export default function Map() {
 
             {/* Title / Region Selector */}
             <div className="w-full flex flex-col items-start px-2 pt-2 pb-4 relative z-20">
-                {/* Row 1: 로고 + 서브문구 */}
-                <div className="w-full flex items-end gap-3 mb-2">
-                    <img
-                        src="/logo.png"
-                        alt="Moi (모이)"
-                        className="h-10 w-auto object-contain shrink-0"
-                    />
-                    <div className="flex flex-col text-left">
-                        <p className="text-slate-600 text-[13px] sm:text-sm tracking-tight hidden sm:block">
-                            나를 위한 배움이 모이는 곳, Moi
-                        </p>
-                        <p className="text-slate-600 text-[13px] tracking-tight sm:hidden">
-                            배움이 모이는 곳, Moi
-                        </p>
-                    </div>
-                </div>
 
-                {/* 구분선 */}
-                <div className="w-full border-t border-slate-100 mb-3" />
-
-                {/* Row 2: 토글버튼 (좌) + 지역선택 (우, 오프라인만) */}
-                <div className="w-full flex items-center justify-between gap-2">
+                {/* Row 1: 토글버튼 - 화면 중앙 정렬 */}
+                <div className="w-full flex justify-center mb-3">
                     <div className="flex bg-slate-100 rounded-full p-1 border border-slate-200 shadow-inner">
                         <button
                             onClick={() => {
@@ -270,6 +251,23 @@ export default function Map() {
                         >
                             온라인
                         </button>
+                    </div>
+                </div>
+
+                {/* 구분선 */}
+                <div className="w-full border-t border-slate-100 mb-3" />
+
+                {/* Row 2: 로고 + 서브문구 (좌) + 지역선택 (우, 오프라인만) */}
+                <div className="w-full flex items-end justify-between gap-2">
+                    <div className="flex items-end gap-3">
+                        <img
+                            src="/logo.png"
+                            alt="Moi (모이)"
+                            className="h-10 w-auto object-contain shrink-0"
+                        />
+                        <p className="text-slate-600 text-[13px] sm:text-sm tracking-tight mb-0.5">
+                            나를 위한 배움이 모이는 곳
+                        </p>
                     </div>
 
                     {courseType === 'offline' && (
