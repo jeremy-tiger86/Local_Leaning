@@ -230,7 +230,7 @@ export default function Map() {
             {/* Title / Region Selector */}
             <div className="w-full flex flex-col items-start px-2 pt-2 pb-4 relative z-20">
                 {/* Row 1: 로고 + 서브문구 */}
-                <div className="w-full flex items-center gap-3 mb-2">
+                <div className="w-full flex items-end gap-3 mb-2">
                     <img
                         src="/logo.png"
                         alt="Moi (모이)"
@@ -255,7 +255,7 @@ export default function Map() {
                         <button
                             onClick={() => {
                                 setCourseType('offline');
-                                setViewMode('map');
+                                setViewMode('list');
                             }}
                             className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${courseType === 'offline' ? 'bg-white text-[#1E3A8A] shadow-sm ring-1 ring-slate-200/50' : 'text-slate-500 hover:text-slate-700'}`}
                         >
