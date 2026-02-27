@@ -23,7 +23,7 @@ export default function Map() {
     const [lectures, setLectures] = useState<Lecture[]>([]);
     const [loading, setLoading] = useState(true);
     const [courseType, setCourseType] = useState<'offline' | 'online'>('offline');
-    const CATEGORIES = ['전체', '취미/문화', '스포츠/건강', '인문/교양', '재테크/자기계발', 'IT/디지털'];
+    const CATEGORIES = ['전체', 'IT/디지털', '취미/문화', '재테크/자기계발', '인문/교양', '스포츠/건강'];
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [categoryExpanded, setCategoryExpanded] = useState(false);
 
