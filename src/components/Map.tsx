@@ -49,9 +49,13 @@ export default function Map() {
         return `D-${diffDays}`;
     };
 
-    const fetchLectures = async () => {
+    const fetchLectures = async (type: 'offline' | 'online', sido: string, sigungu: string) => {
+        setLoading(true);
         try {
-            const res = await fetch('/api/lectures');
+            const params = new URLSearchParams({ type });
+            if (type === 'offline' && sido) params.set('sido', sido);
+            if (type === 'offline' && sigungu && sigungu !== '전체') params.set('sigungu', sigungu);
+            const res = await fetch(`/api/lectures?${params.toString()}`);
             const data = await res.json();
             if (data.success) {
                 setLectures(data.data);
@@ -63,9 +67,8 @@ export default function Map() {
         }
     };
 
+    // 초기 위치 파악 (최초 1회)
     useEffect(() => {
-        fetchLectures();
-
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
@@ -73,12 +76,10 @@ export default function Map() {
                     const lng = position.coords.longitude;
                     setLocation({ lat, lng });
 
-                    // Reverse Geocoding to get Si/Gu
                     try {
                         const geoRes = await fetch(`/api/geocode?lat=${lat}&lng=${lng}`);
                         const geoData = await geoRes.json();
                         if (geoData.success) {
-                            // find matching Sido in our REGIONS list (e.g. "서울" -> "서울특별시")
                             const matchedSido = sidos.find(s => s.includes(geoData.sido) || geoData.sido.includes(s)) || geoData.sido;
                             setSelectedSido(matchedSido);
                             setSelectedSigungu(geoData.sigungu);
@@ -89,7 +90,7 @@ export default function Map() {
                     }
                 },
                 (error) => {
-                    setLocation({ lat: 37.5665, lng: 126.9780 }); // Fallback to Seoul City Hall
+                    setLocation({ lat: 37.5665, lng: 126.9780 });
                     setErrorMsg('위치를 찾을 수 없어 기본 위치(서울)로 설정되었습니다.');
                     console.error(error);
                 }
@@ -100,64 +101,23 @@ export default function Map() {
         }
     }, []);
 
+    // courseType / 지역 변경 시 자동 재호출
+    useEffect(() => {
+        fetchLectures(courseType, selectedSido, selectedSigungu);
+        setSelectedCategory('전체'); // 지역·타입 변경 시 카테고리 초기화
+    }, [courseType, selectedSido, selectedSigungu]);
+
     const processedLectures = useMemo(() => {
-        // Add distance and isOnline flags to all lectures first
+        // 서버에서 이미 type/sido/sigungu 필터링 완료
+        // 클라이언트: 거리 계산 + 카테고리 필터 + 마감 필터만 수행
         let filtered = lectures.map(lec => {
             let distance = Infinity;
             if (location && lec.lat != null && lec.lng != null) {
                 distance = calculateDistance(location.lat, location.lng, lec.lat, lec.lng);
             }
-
-            // Determine if course is online
-            const isOnline = lec.address.includes('온라인') ||
-                lec.target.includes('온라인') ||
-                (lec.link && lec.link.includes('kmooc.kr')) ||
-                lec.category === '온라인'; // Fallback check
-
+            const isOnline = courseType === 'online';
             return { ...lec, distance, isOnline };
         });
-
-        // Filter by course type (Offline / Online)
-        filtered = filtered.filter(l => courseType === 'online' ? l.isOnline : !l.isOnline);
-
-        // Filter offline courses by selected region
-        if (courseType === 'offline') {
-            filtered = filtered.filter(l => {
-                // Robust Sido matching with alias mapping
-                const SIDO_ALIASES: Record<string, string[]> = {
-                    '서울특별시': ['서울'],
-                    '인천광역시': ['인천'],
-                    '대전광역시': ['대전'],
-                    '대구광역시': ['대구'],
-                    '광주광역시': ['광주'],
-                    '부산광역시': ['부산'],
-                    '울산광역시': ['울산'],
-                    '세종특별자치시': ['세종'],
-                    '경기도': ['경기'],
-                    '강원특별자치도': ['강원', '강원도'],
-                    '충청북도': ['충북'],
-                    '충청남도': ['충남'],
-                    '전북특별자치도': ['전북', '전라북도'],
-                    '전라남도': ['전남'],
-                    '경상북도': ['경북'],
-                    '경상남도': ['경남'],
-                    '제주특별자치도': ['제주', '제주도'],
-                };
-
-                const variations = [selectedSido, ...(SIDO_ALIASES[selectedSido] || [])];
-                const matchSido = variations.some(v => l.address.includes(v));
-
-                // Sigungu matching (handle '전체')
-                let matchSigungu = true;
-                if (selectedSigungu && selectedSigungu !== '전체') {
-                    // Some sigungu names in address might not include city name (e.g. '강남구' instead of '서울시 강남구')
-                    // or vice-versa. We use simple includes.
-                    matchSigungu = l.address.includes(selectedSigungu);
-                }
-
-                return matchSido && matchSigungu;
-            });
-        }
 
         if (selectedCategory !== '전체') {
             filtered = filtered.filter(l => l.category === selectedCategory);
