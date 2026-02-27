@@ -9,13 +9,18 @@ export async function GET(request: Request) {
         return NextResponse.json({ success: false, message: 'Missing coordinates' }, { status: 400 });
     }
 
-    const API_KEY = process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY;
+    const REST_API_KEY = process.env.KAKAO_REST_API_KEY || process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY;
+
+    if (!REST_API_KEY) {
+        console.error('Missing Kakao API Key');
+        return NextResponse.json({ success: false, message: 'Server configuration error' }, { status: 500 });
+    }
 
     try {
         const url = `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`;
         const response = await fetch(url, {
             headers: {
-                Authorization: `KakaoAK ${API_KEY}`
+                Authorization: `KakaoAK ${REST_API_KEY}`
             }
         });
 
