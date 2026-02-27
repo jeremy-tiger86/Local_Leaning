@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center pt-8 pb-4 px-4 font-inter">
+    <main className="min-h-screen flex flex-col items-center pt-6 pb-4 px-4 font-inter">
       <section className="w-full flex-1 flex flex-col relative pt-4">
         <Map />
       </section>
