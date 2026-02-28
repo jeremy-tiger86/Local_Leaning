@@ -424,10 +424,10 @@ export default function Map() {
 
             {/* Floating Action Button for Toggle (Only show if Offline) */}
             {courseType === 'offline' && (
-                <div className="fixed bottom-8 z-50 flex justify-end w-full max-w-[480px] px-6" style={{ left: '50%', transform: 'translateX(-50%)' }}>
+                <div className="fixed bottom-8 z-50 flex justify-end w-full max-w-[480px] px-6 pointer-events-none" style={{ left: '50%', transform: 'translateX(-50%)' }}>
                     <button
                         onClick={() => setViewMode(viewMode === 'list' ? 'map' : 'list')}
-                        className="flex items-center justify-center w-14 h-14 bg-[#1E3A8A] text-white rounded-full shadow-[0_8px_30px_rgb(30,58,138,0.3)] hover:bg-[#1E40AF] hover:scale-105 active:scale-95 transition-all duration-300 border border-white/10 backdrop-blur-xl"
+                        className="pointer-events-auto flex items-center justify-center w-14 h-14 bg-[#1E3A8A] text-white rounded-full shadow-[0_8px_30px_rgb(30,58,138,0.3)] hover:bg-[#1E40AF] hover:scale-105 active:scale-95 transition-all duration-300 border border-white/10 backdrop-blur-xl"
                         aria-label={viewMode === 'list' ? '지도 뷰' : '목록 뷰'}
                     >
                         {viewMode === 'list' ? (
