@@ -29,7 +29,12 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_DATA_PORTAL_KEY: ${{ secrets.NEXT_PUBLIC_DATA_PORTAL_KEY }}
           NEXT_PUBLIC_KAKAO_MAP_API_KEY: ${{ secrets.NEXT_PUBLIC_KAKAO_MAP_API_KEY }}
+          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
         run: |
           echo "Starting scheduled lecture data sync..."
           npx tsx scripts/syncLectures.ts
-          echo "Sync completed successfully."
+          
+          echo "Phase 2: Smart Geocoding (운영 중인 강좌 좌표 미확정 건만 처리)..."
+          npx tsx scripts/smartGeocode.ts
+          
+          echo "Sync and Smart Geocoding completed successfully."

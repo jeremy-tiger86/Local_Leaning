@@ -53,13 +53,14 @@ async function main() {
     let totalFail = 0;
 
     while (true) {
-        console.log(`Fetching page ${page} (range ${page * CHUNK_SIZE} - ${(page + 1) * CHUNK_SIZE - 1})...`);
+        console.log(`Fetching next ${CHUNK_SIZE} lectures with missing coordinates...`);
         const { data: lectures, error } = await supabase
             .from('lectures')
             .select('id, address')
+            .is('lat', null) // ★ 좌표가 없는 것만!
             .not('address', 'ilike', '%온라인%')
             .order('id')
-            .range(page * CHUNK_SIZE, (page + 1) * CHUNK_SIZE - 1);
+            .limit(CHUNK_SIZE);
 
         if (error) {
             console.error('Error fetching lectures:', error);

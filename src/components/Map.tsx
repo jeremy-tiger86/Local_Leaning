@@ -92,13 +92,21 @@ export default function Map() {
                 },
                 (error) => {
                     setLocation({ lat: 37.5665, lng: 126.9780 });
+                    setSelectedSido('서울특별시');
+                    setSelectedSigungu('중구');
+                    setModalActiveSido('서울특별시');
                     setErrorMsg('위치를 찾을 수 없어 기본 위치(서울)로 설정되었습니다.');
+                    fetchLectures('offline', '서울특별시', '중구');
                     console.error(error);
                 }
             );
         } else {
             setLocation({ lat: 37.5665, lng: 126.9780 });
+            setSelectedSido('서울특별시');
+            setSelectedSigungu('중구');
+            setModalActiveSido('서울특별시');
             setErrorMsg('브라우저가 위치 정보를 지원하지 않습니다.');
+            fetchLectures('offline', '서울특별시', '중구');
         }
     }, []);
 

@@ -19,6 +19,20 @@ if (!API_KEY) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+/**
+ * period 문자열에서 종료일을 파싱하여 YYYY-MM-DD 반환
+ * 예: "2026-01-01 ~ 2026-03-31" → "2026-03-31"
+ */
+function parseApplyEnd(period: string | null | undefined): string | null {
+    if (!period || period === '상시') return null;
+    const parts = period.split('~');
+    if (parts.length < 2) return null;
+    const endStr = parts[1].trim().replace(/\./g, '-');
+    if (!endStr.match(/^\d{4}-\d{2}-\d{2}$/)) return null;
+    const d = new Date(endStr);
+    return isNaN(d.getTime()) ? null : endStr;
+}
+
 const standardBaseUrl = 'http://api.data.go.kr/openapi/tn_pubr_public_lftm_lrn_lctre_api';
 const kmoocBaseUrl = 'https://apis.data.go.kr/B552881/kmooc_v2_0/courseList_v2_0';
 const NUM_OF_ROWS = 1000;
@@ -38,7 +52,7 @@ async function fetchKmoocData() {
     console.log('--- Starting K-MOOC data synchronization ---');
 
     while (hasMore) {
-        const url = `${kmoocBaseUrl}?serviceKey=${API_KEY}&MobileOS=ETC&MobileApp=LocalLeaning&pageNo=${pageNo}&numOfRows=${NUM_OF_ROWS}`;
+        const url = `${kmoocBaseUrl}?serviceKey=${API_KEY}&MobileOS=ETC&MobileApp=LocalLeaning&page=${pageNo}&numOfRows=100`;
         try {
             console.log(`[K-MOOC] Fetching page ${pageNo}...`);
             const response = await fetch(url);
@@ -83,7 +97,8 @@ async function fetchKmoocData() {
                     lng: null,
                     address: '온라인 강좌',
                     is_free: true,
-                    price: '무료'
+                    price: '무료',
+                    apply_end: parseApplyEnd(period),
                 };
             });
 
@@ -158,30 +173,38 @@ async function fetchPublicData() {
                     item.edcEndDay || 'NO_END',
                 ].join('_').replace(/\s+/g, '_').substring(0, 200);
 
+                const period = `${item.edcStartDay || ''} ~ ${item.edcEndDay || ''}`;
                 return {
                     id: `STD_${baseId}`,
                     title: item.lctreNm || '제목 없음',
                     instructor: item.instrctrNm || '강사 미상',
-                    period: `${item.edcStartDay || ''} ~ ${item.edcEndDay || ''}`,
+                    period: period,
                     target: item.edcTrgetType || '누구나',
                     link: item.homepageUrl || '',
                     lat: null,  // geocoding 스크립트로 나중에 실제 주소 반영
                     lng: null,
                     address: item.edcRdnmadr || item.edcPlace || '장소 미상',
                     is_free: (item.lctreCost === '0'),
-                    price: item.lctreCost === '0' ? '무료' : (item.lctreCost ? `${item.lctreCost}원` : '무료')
+                    price: item.lctreCost === '0' ? '무료' : (item.lctreCost ? `${item.lctreCost}원` : '무료'),
+                    apply_end: parseApplyEnd(period),
                 };
             });
 
+            // ★ 배치 내 중복 ID 제거 (동일한 ID가 한 배치에 있으면 Supabase 21000 에러 발생)
+            const uniqueLectures = Array.from(
+                new Map(formattedLectures.map(item => [item.id, item])).values()
+            );
+
             const { error } = await supabase
                 .from('lectures')
-                .upsert(formattedLectures, { onConflict: 'id' });
+                .upsert(uniqueLectures, { onConflict: 'id' });
 
             if (error) {
                 console.error(`[Public] Supabase Upsert Error on page ${pageNo}:`, error);
+                // 중대한 에러(네트워크 등)일 수 있으므로 일단 중단하지는 않되 로그는 남김
             } else {
-                totalCount += formattedLectures.length;
-                console.log(`[Public] Successfully upserted ${formattedLectures.length} items from page ${pageNo}. Total: ${totalCount}`);
+                totalCount += uniqueLectures.length;
+                console.log(`[Public] Successfully upserted ${uniqueLectures.length} items from page ${pageNo}. Total: ${totalCount}`);
             }
 
             if (items.length < NUM_OF_ROWS) {

@@ -139,46 +139,108 @@ export async function GET(request: Request) {
         const sido = url.searchParams.get('sido') || '';
         const sigungu = url.searchParams.get('sigungu') || '';
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD (기존 호환성 유지)
+
         let query = supabase.from('lectures').select('*');
 
         if (type === 'online') {
             // 온라인: address에 '온라인' 포함 OR kmooc.kr 링크
             query = query.or('address.ilike.%온라인%, link.ilike.%kmooc.kr%');
+            query = query.gte('apply_end', todayStr);
         } else {
-            // 오프라인: sido로 필터 + 온라인 주소 제외
+            // 오프라인
+            query = query.not('address', 'ilike', '%온라인%');
+
             if (sido) {
-                // sido의 축약형도 포함하여 OR 검색
+                // ★ sido 있을 때: DB에서 sido 지역 강좌 가져온 후 JS로 날짜 필터
                 const aliases = [sido, ...(SIDO_ALIASES[sido] || [])];
                 const orConditions = aliases.map(a => `address.ilike.%${a}%`).join(',');
                 query = query.or(orConditions);
-            }
-            // 온라인 주소 제외
-            query = query.not('address', 'ilike', '%온라인%');
 
-            // sigungu 필터 ('전체'가 아닐 때만)
-            if (sigungu && sigungu !== '전체') {
-                query = query.ilike('address', `%${sigungu}%`);
-            }
+                if (sigungu && sigungu !== '전체') {
+                    query = query.ilike('address', `%${sigungu}%`);
+                }
+                // sido 지역은 최대 수백 건이므로 limit 넉넉하게
+                query = query.limit(2000);
+            } else {
+                // ★ 전국(sido 없음): Supabase max_rows(1,000) 우회를 위해 페이지네이션
+                // apply_end >= 오늘 조건으로 DB에서 최대 2,000건씩 나눠서 가져옴
+                const PAGE_SIZE = 1000;
+                const allRows: typeof data extends null ? never[] : NonNullable<typeof data> = [] as any;
+                let page = 0;
+                let hasMore = true;
 
-            // 오프라인은 최대 5,000건 (시도 단위 전체도 커버 가능)
-            query = query.limit(5000);
+                while (hasMore) {
+                    const { data: pageData, error: pageError } = await supabase
+                        .from('lectures')
+                        .select('*')
+                        .not('address', 'ilike', '%온라인%')
+                        .gte('apply_end', todayStr)
+                        .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+
+                    if (pageError) throw pageError;
+                    if (!pageData || pageData.length === 0) break;
+
+                    allRows.push(...pageData);
+                    hasMore = pageData.length === PAGE_SIZE;
+                    page++;
+                }
+
+                console.log(`[DEBUG] raw data from Supabase(전국 페이지네이션): ${allRows.length}건`);
+                const formatData: Lecture[] = allRows.map(row => {
+                    const dbCategory = row.category || '일반';
+                    const category = (dbCategory === '일반' || !dbCategory)
+                        ? classifyCategory(row.title || '')
+                        : dbCategory;
+                    const endDate = row.apply_end || parseEndDate(row.period);
+                    return {
+                        id: row.id,
+                        title: row.title,
+                        instructor: row.instructor,
+                        period: row.period,
+                        target: row.target,
+                        link: row.link,
+                        lat: row.lat,
+                        lng: row.lng,
+                        address: row.address,
+                        isFree: row.is_free,
+                        price: row.price,
+                        category,
+                        applyEnd: endDate || '2099-12-31',
+                    };
+                });
+                console.log(`[/api/lectures] type=${type} sido= sigungu= → ${formatData.length}건`);
+                return NextResponse.json({ success: true, data: formatData });
+            }
         }
 
         const { data, error } = await query;
 
         if (error) throw error;
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        console.log(`[DEBUG] raw data from Supabase: ${(data || []).length}건, sido=${sido}`);
 
-        const formatData: Lecture[] = (data || [])
+        // ★ JS 서버 레벨 날짜 필터 (sido 있는 경우에만 실질 적용)
+        const filtered = sido
+            ? (data || []).filter(row => {
+                if (row.apply_end) return new Date(row.apply_end) >= today;
+                const endDate = parseEndDate(row.period);
+                if (!endDate) return true;
+                return new Date(endDate) >= today;
+            })
+            : (data || []);
+
+        const formatData: Lecture[] = filtered
             .map(row => {
                 const dbCategory = row.category || '일반';
                 const category = (dbCategory === '일반' || !dbCategory)
                     ? classifyCategory(row.title || '')
                     : dbCategory;
 
-                const endDate = parseEndDate(row.period);
+                // apply_end가 있으면 사용, 없으면 period에서 파싱 시도
+                const endDate = row.apply_end || parseEndDate(row.period);
 
                 return {
                     id: row.id,
@@ -194,15 +256,8 @@ export async function GET(request: Request) {
                     price: row.price,
                     category,
                     applyEnd: endDate || '2099-12-31',
-                    _endDate: endDate, // 필터용 내부 필드
                 };
-            })
-            // ★ 오늘 이전 종료된 강좌 제거
-            .filter((row: any) => {
-                if (!row._endDate) return true; // 날짜 없으면 유지
-                return new Date(row._endDate) >= today;
-            })
-            .map(({ _endDate, ...rest }: any) => rest); // 내부 필드 제거
+            });
 
 
         console.log(`[/api/lectures] type=${type} sido=${sido} sigungu=${sigungu} → ${formatData.length}건`);
