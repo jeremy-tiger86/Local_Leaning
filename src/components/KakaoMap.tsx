@@ -25,10 +25,9 @@ interface Lecture {
 interface KakaoMapProps {
     lectures: Lecture[];
     userLocation: { lat: number; lng: number } | null;
-    onCopyToast?: (title: string, link: string, e?: React.MouseEvent) => void;
 }
 
-const KakaoMap = ({ lectures, userLocation, onCopyToast }: KakaoMapProps) => {
+const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
     // Group lectures by coordinates
     const lectureGroups = useMemo(() => {
         const groups: { [key: string]: { position: { lat: number; lng: number }; lectures: Lecture[] } } = {};
@@ -145,20 +144,16 @@ const KakaoMap = ({ lectures, userLocation, onCopyToast }: KakaoMapProps) => {
                                             </div>
 
                                             {lecture.link && (
-                                                <button
-                                                    onClick={(e) => {
-                                                        if (onCopyToast) {
-                                                            onCopyToast(lecture.title, lecture.link as string, e as any);
-                                                        } else {
-                                                            window.open(lecture.link, '_blank', 'noopener,noreferrer');
-                                                        }
-                                                    }}
+                                                <a
+                                                    href={lecture.link}
+                                                    target="_blank"
+                                                    rel="noreferrer"
                                                     className="flex items-center justify-center gap-1.5 w-full bg-[#1E3A8A] hover:bg-[#1E40AF] text-white font-bold py-2 rounded-xl transition-all text-[11px] shadow-lg shadow-blue-100 active:scale-95"
                                                     onMouseDown={(e) => e.stopPropagation()} // 링크 클릭 시에도 이벤트 전파 차단
                                                 >
                                                     <ExternalLink size={12} />
-                                                    수강 신청하기
-                                                </button>
+                                                    상세보기
+                                                </a>
                                             )}
                                         </div>
                                     </div>
