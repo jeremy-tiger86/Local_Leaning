@@ -28,16 +28,11 @@ interface KakaoMapProps {
 }
 
 const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
-    const [selectedLecture, setSelectedLecture] = useState<Lecture | null>(null);
-
-    // Filter out lectures with invalid coordinates
-    const validLectures = useMemo(() => {
-        return lectures.filter(l => l.lat !== 0 && l.lng !== 0 && l.lat != null && l.lng != null);
-    }, [lectures]);
-
     // Group lectures by coordinates
     const lectureGroups = useMemo(() => {
         const groups: { [key: string]: { position: { lat: number; lng: number }; lectures: Lecture[] } } = {};
+
+        const validLectures = lectures.filter(l => l.lat !== 0 && l.lng !== 0 && l.lat != null && l.lng != null);
 
         validLectures.forEach(lecture => {
             const key = `${lecture.lat},${lecture.lng}`;
@@ -51,7 +46,7 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
         });
 
         return Object.values(groups);
-    }, [validLectures]);
+    }, [lectures]);
 
     const [selectedGroup, setSelectedGroup] = useState<{ position: { lat: number; lng: number }; lectures: Lecture[] } | null>(null);
 
@@ -87,7 +82,11 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
                         <MapMarker
                             key={`${group.position.lat}-${group.position.lng}-${idx}`}
                             position={group.position}
-                            onClick={() => setSelectedGroup(group)}
+                            onClick={() => {
+                                // 기존 오버레이 닫고 새로 열기 (강제 상태 갱신)
+                                setSelectedGroup(null);
+                                setTimeout(() => setSelectedGroup(group), 10);
+                            }}
                         />
                     ))}
                 </MarkerClusterer>
@@ -97,6 +96,7 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
                     <CustomOverlayMap
                         position={selectedGroup.position}
                         yAnchor={selectedGroup.lectures.length > 1 ? 1.05 : 1.2}
+                        zIndex={100}
                     >
                         <div className={`bg-white rounded-2xl shadow-2xl border border-slate-100 animate-in fade-in zoom-in duration-200 relative overflow-hidden ${selectedGroup.lectures.length > 1 ? 'w-72 max-h-80' : 'w-64'}`}>
                             {/* Header for multi-lecture */}
@@ -111,7 +111,7 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
 
                             <button
                                 onClick={() => setSelectedGroup(null)}
-                                className="absolute top-2 right-2 z-10 p-1 bg-white/80 backdrop-blur-sm rounded-full text-slate-400 hover:text-slate-600 transition-colors shadow-sm"
+                                className="absolute top-2 right-2 z-20 p-1 bg-white/80 backdrop-blur-sm rounded-full text-slate-400 hover:text-slate-600 transition-colors shadow-sm"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </button>
