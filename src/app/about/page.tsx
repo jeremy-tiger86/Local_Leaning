@@ -111,12 +111,12 @@ export default function AboutPage() {
                         </div>
 
                         <div className="text-xs text-center text-slate-400 bg-slate-100/50 p-4 rounded-xl border border-slate-100">
-                            Moi의 모든 정보는 <strong className="font-medium text-slate-600">대한민국 공공데이터포털(data.go.kr)</strong>에서 실시간 API 데이터를 바탕으로 운영됩니다.
+                            Moi의 모든 정보는 <strong className="font-medium text-slate-600">대한민국 공공데이터포털(data.go.kr)</strong>에서<br />실시간 API 데이터를 바탕으로 운영됩니다.
                         </div>
                     </div>
 
                 </div>
             </div>
-        </main>
+        </main >
     );
 }
