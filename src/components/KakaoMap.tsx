@@ -49,6 +49,7 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
     }, [lectures]);
 
     const [selectedGroup, setSelectedGroup] = useState<{ position: { lat: number; lng: number }; lectures: Lecture[] } | null>(null);
+    const [map, setMap] = useState<kakao.maps.Map>();
 
     // Initial center: user location or Seoul City Hall
     const center = useMemo(() => {
@@ -62,6 +63,7 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
                 center={center}
                 style={{ width: "100%", height: "100%" }}
                 level={8}
+                onCreate={setMap}
             >
                 {/* User Location Marker */}
                 {userLocation && (
@@ -86,6 +88,9 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
                                 // 기존 오버레이 닫고 새로 열기 (강제 상태 갱신)
                                 setSelectedGroup(null);
                                 setTimeout(() => setSelectedGroup(group), 10);
+                                if (map) {
+                                    map.panTo(new kakao.maps.LatLng(group.position.lat, group.position.lng));
+                                }
                             }}
                         />
                     ))}
