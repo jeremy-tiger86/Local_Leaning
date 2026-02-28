@@ -128,10 +128,11 @@ export default function Map() {
             return { ...lec, distance, isOnline };
         });
 
-        // ★ DB 중복 제거: title + address 기준 dedup (syncLectures 중복 실행으로 인한 중복 방지)
+        // ★ DB 중복 제거: title + address + coords 기준 dedup
+        // 같은 주소라도 좌표가 다를 수 있고, 좌표 그룹화 기능을 위해 좌표 정보를 키에 포함합니다.
         const seen = new Set<string>();
         filtered = filtered.filter(l => {
-            const key = `${l.title}||${l.address}`;
+            const key = `${l.title}||${l.address}||${l.lat}||${l.lng}`;
             if (seen.has(key)) return false;
             seen.add(key);
             return true;

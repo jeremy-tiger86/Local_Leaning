@@ -82,7 +82,6 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
                 {/* Lecture Markers with Clusterer */}
                 <MarkerClusterer
                     averageCenter={true}
-                    minLevel={10}
                 >
                     {lectureGroups.map((group, idx) => (
                         <MapMarker
