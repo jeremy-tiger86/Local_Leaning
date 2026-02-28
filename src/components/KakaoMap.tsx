@@ -116,7 +116,12 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </button>
 
-                            <div className={`overflow-y-auto custom-scrollbar ${selectedGroup.lectures.length > 1 ? 'max-h-[280px]' : ''}`}>
+                            <div
+                                className={`overflow-y-auto custom-scrollbar ${selectedGroup.lectures.length > 1 ? 'max-h-[280px]' : ''}`}
+                                onWheel={(e) => e.stopPropagation()}
+                                onMouseDown={(e) => e.stopPropagation()}
+                                onTouchMove={(e) => e.stopPropagation()}
+                            >
                                 {selectedGroup.lectures.map((lecture, idx) => (
                                     <div key={lecture.id} className={`p-4 ${idx !== selectedGroup.lectures.length - 1 ? 'border-b border-slate-50' : ''} hover:bg-slate-50/50 transition-colors group`}>
                                         <div className="pr-4">
@@ -139,6 +144,7 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     className="flex items-center justify-center gap-1.5 w-full bg-[#1E3A8A] hover:bg-[#1E40AF] text-white font-bold py-2 rounded-xl transition-all text-[11px] shadow-lg shadow-blue-100 active:scale-95"
+                                                    onMouseDown={(e) => e.stopPropagation()} // 링크 클릭 시에도 이벤트 전파 차단
                                                 >
                                                     <ExternalLink size={12} />
                                                     상세보기
@@ -152,14 +158,16 @@ const KakaoMap = ({ lectures, userLocation }: KakaoMapProps) => {
 
                         <style jsx>{`
                             .custom-scrollbar::-webkit-scrollbar {
-                                width: 4px;
+                                width: 6px;
                             }
                             .custom-scrollbar::-webkit-scrollbar-track {
-                                background: transparent;
+                                background: #F8FAFC;
+                                border-radius: 0 0 16px 0;
                             }
                             .custom-scrollbar::-webkit-scrollbar-thumb {
                                 background: #CBD5E1;
                                 border-radius: 10px;
+                                border: 1.5px solid #F8FAFC;
                             }
                             .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                                 background: #94A3B8;
