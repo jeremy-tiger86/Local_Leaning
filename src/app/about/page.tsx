@@ -61,7 +61,7 @@ export default function AboutPage() {
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-slate-800 mb-1 text-base">Accessibility <span className="text-slate-500 font-medium text-sm ml-1">(배움의 평등)</span></h4>
-                                    <p className="text-slate-600 leading-relaxed">수강료 부담 없는 '0원' 강의와 국가 지원 온라인 강좌(K-MOOC)를 우선적으로 배치하여 누구나 배움의 기회를 누릴 수 있도록 돕습니다.</p>
+                                    <p className="text-slate-600 leading-relaxed">수강료 부담 없는 강의와 국가 지원 온라인 강좌(K-MOOC)로 누구나 배움의 기회를 누릴 수 있도록 돕습니다.</p>
                                 </div>
                             </div>
 
@@ -99,7 +99,7 @@ export default function AboutPage() {
                                     <div className="w-1.5 h-1.5 rounded-full bg-[#1E3A8A] mt-2 shrink-0"></div>
                                     <div className="text-slate-700">
                                         <span className="font-semibold block mb-0.5">전국평생학습강좌표준데이터</span>
-                                        <span className="text-slate-500 text-sm">지자체별 오프라인 강좌 및 취미 클래스 정보</span>
+                                        <span className="text-slate-500 text-sm">국가 및 지자체별 오프라인 강좌 및 취미 클래스 정보</span>
                                     </div>
                                 </li>
                                 <li className="flex gap-3">
