@@ -26,6 +26,7 @@ export default function Map() {
     const CATEGORIES = ['전체', 'IT/디지털', '취미/문화', '재테크/자기계발', '인문/교양', '스포츠/건강'];
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [categoryExpanded, setCategoryExpanded] = useState(false);
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
 
     // Region Selection States
     const [regionMenuOpen, setRegionMenuOpen] = useState(false);
@@ -65,6 +66,26 @@ export default function Map() {
             console.error(err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleCopyAndOpen = (title: string, link: string, e?: React.MouseEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        if (typeof navigator !== 'undefined' && navigator.clipboard) {
+            navigator.clipboard.writeText(title).then(() => {
+                setToastMessage("강좌명이 복사되었습니다. 수강신청 페이지에서 검색창에 붙여넣기 하세요.");
+                setTimeout(() => setToastMessage(null), 3000);
+                window.open(link, '_blank', 'noopener,noreferrer');
+            }).catch(err => {
+                console.error("복사 실패", err);
+                window.open(link, '_blank', 'noopener,noreferrer');
+            });
+        } else {
+            window.open(link, '_blank', 'noopener,noreferrer');
         }
     };
 
@@ -337,6 +358,7 @@ export default function Map() {
                     <KakaoMap
                         lectures={processedLectures}
                         userLocation={location}
+                        onCopyToast={handleCopyAndOpen}
                     />
                 </div>
             ) : (
@@ -404,10 +426,13 @@ export default function Map() {
 
                                     {lecture.link && (
                                         <div className="mt-6">
-                                            <a href={lecture.link} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-[#1E3A8A] hover:bg-[#1E40AF] text-white font-medium rounded-2xl transition-all duration-300 shadow-lg shadow-[#1E3A8A]/20 hover:shadow-xl hover:shadow-[#1E3A8A]/30">
+                                            <button
+                                                onClick={(e) => handleCopyAndOpen(lecture.title, lecture.link as string, e)}
+                                                className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-[#1E3A8A] hover:bg-[#1E40AF] text-white font-medium rounded-2xl transition-all duration-300 shadow-lg shadow-[#1E3A8A]/20 hover:shadow-xl hover:shadow-[#1E3A8A]/30"
+                                            >
                                                 <span>수강 신청하기</span>
                                                 <ExternalLink size={16} />
-                                            </a>
+                                            </button>
                                         </div>
                                     )}
                                 </div>
@@ -436,6 +461,16 @@ export default function Map() {
                             <ListIcon size={24} />
                         )}
                     </button>
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {toastMessage && (
+                <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-[100] px-4 py-3 bg-slate-800/90 backdrop-blur-md text-white text-sm font-medium rounded-2xl shadow-2xl animate-in fade-in slide-in-from-bottom-5 duration-300 text-center w-max max-w-[90vw]">
+                    <div className="flex flex-col items-center gap-1">
+                        <CheckCircle size={18} className="text-green-400" />
+                        <span>{toastMessage}</span>
+                    </div>
                 </div>
             )}
 
