@@ -192,7 +192,7 @@ async function fetchPublicData() {
 
             // ★ 배치 내 중복 ID 제거 (동일한 ID가 한 배치에 있으면 Supabase 21000 에러 발생)
             const uniqueLectures = Array.from(
-                new Map(formattedLectures.map(item => [item.id, item])).values()
+                new Map(formattedLectures.map((item: any) => [item.id, item])).values()
             );
 
             const { error } = await supabase
