@@ -1,10 +1,17 @@
+"use client";
+
 import Link from 'next/link';
 import { BookOpen, MapPin, Database, ChevronLeft, Search, GraduationCap } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function AboutPage() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
-        <main className="min-h-screen bg-slate-50 flex justify-center font-inter text-slate-800">
-            <div className="w-full max-w-[480px] bg-white min-h-screen shadow-2xl shadow-blue-900/5 flex flex-col relative overflow-hidden">
+        <main className="min-h-[100dvh] bg-slate-50 flex justify-center font-inter text-slate-800">
+            <div className="w-full max-w-[480px] bg-white min-h-[100dvh] shadow-2xl shadow-blue-900/5 flex flex-col relative overflow-hidden">
                 {/* Header */}
                 <header className="w-full px-5 py-6 flex items-center border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-10">
                     <Link href="/" className="p-2 -ml-2 text-slate-400 hover:text-[#1E3A8A] transition-colors rounded-full hover:bg-slate-50">
@@ -14,7 +21,7 @@ export default function AboutPage() {
                 </header>
 
                 {/* Content */}
-                <div className="px-6- sm:px-8 py-10 flex-1 overflow-y-auto">
+                <div className="px-6 sm:px-8 py-10 flex-1 overflow-y-auto">
 
                     {/* Hero Section */}
                     <div className="mb-14 text-center px-4">
